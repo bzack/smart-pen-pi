@@ -1,13 +1,15 @@
 #!/usr/bin/env python
-# from sensor_setup import print
-from sensor_setup import print_info
+# -*- coding: utf-8 -*-
+
+import os
+import sensor_setup
 import RPi.GPIO   as GPIO
 
-
-print('Button File Imported')
+# print('Button File Imported')
 BtnPin = 11
 Gpin   = 12
 Rpin   = 13
+queue  = None
 
 def setup():
 	GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
@@ -15,6 +17,11 @@ def setup():
 	GPIO.setup(Rpin, GPIO.OUT)     # Set Red Led Pin mode to output
 	GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
 	GPIO.add_event_detect(BtnPin, GPIO.BOTH, callback=detect, bouncetime=200)
+
+def quick_sensor_print():
+    arr = queue.get()
+    print('    Temperature: {}°F, Light: {}'.format(arr[0], arr[1]))
+    print
 
 def Led(x):
 	if x == 0:
@@ -29,6 +36,7 @@ def Print(x):
 		print '    ***********************'
 		print '    *   Button Pressed!   *'
 		print '    ***********************'
+                quick_sensor_print()
 
 def detect(chn):
 	Led(GPIO.input(BtnPin))
@@ -43,14 +51,13 @@ def destroy():
 	GPIO.output(Rpin, GPIO.HIGH)       # Red led off
 	GPIO.cleanup()                     # Release resource
 
-def main():
-	setup()
+def button_main(shared_queue):
 	try:
-		loop()
+            global queue
+            queue = shared_queue
+            setup()
+            loop()
 	except KeyboardInterrupt:  
         # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
-		destroy()
-
-
-if __name__ == '__main__':     # Program start from here
-    main()
+            destroy()
+            os._exit(2)

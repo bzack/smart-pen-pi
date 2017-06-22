@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Program that runs all the sensors and prints out diagnostic information 
-# every two seconds.
+# Program that runs all the sensors and prints out diagnostic information # every two seconds.
 import RPi.GPIO as GPIO
 import PCF8591 as ADC
 import smbus
 import time
+import os
 
 # Read information from the temperature file.
 temperature_filename = '/sys/bus/w1/devices/28-03167489f3ff/w1_slave'
 temperature          = None
+queue                = None
 
 # Set the time delay between print statements in seconds.
 time_delay = 2
@@ -35,19 +36,17 @@ def print_temperature():
         temperature_line = f.readline()
         temp_index       = temperature_line.find('=') + 1
         value_str        = temperature_line[temp_index:]
-        # print('value_str', value_str)
-        # print('temp_index', temp_index)
-        # print('temperature_line', temperature_line)
-
         temperature      = int(value_str)
         temperature      = Celcius_To_Fahreinheit(temperature)
         print('Temperature {}°F'.format(temperature))
+        return temperature
 
 def print_info():
     light_value = ADC.read(0)
-    print_temperature()
-    print('Light Value: {}'.format(light_value))
+    temperature = print_temperature()
+    print('Light: {}'.format(light_value))
     print
+    queue.put([temperature, light_value])
     time.sleep(time_delay)
 
 # Prints out the light and temperature values
@@ -56,11 +55,11 @@ def loop():
     while True:
         print_info()
 
-if __name__ == '__main__':
-    # button.main()
+def sensor_main(shared_queue):
     try:
+        global queue
+        queue = shared_queue
         light_sensor_setup()
         loop()
     except KeyboardInterrupt:
         pass
-

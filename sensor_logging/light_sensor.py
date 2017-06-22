@@ -18,10 +18,13 @@ def loop():
 		
 		time.sleep(0.2)
 
-if __name__ == '__main__':
+def light_main():
 	try:
 		setup()
 		loop()
 	except KeyboardInterrupt: 
 		pass	
 
+
+if __name__ == '__main__':
+    main()
