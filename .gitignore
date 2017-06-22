@@ -1,6 +1,7 @@
 # env scripts
 env.sh
 *.swp
+pyenv/
 
 # Byte-compiled / optimized / DLL files
 
