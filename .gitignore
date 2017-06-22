@@ -4,6 +4,8 @@ env.sh
 pyenv/
 database.db
 *.orig
+.idea/
+*.iml
 
 # Byte-compiled / optimized / DLL files
 
