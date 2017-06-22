@@ -3,6 +3,7 @@ env.sh
 *.swp
 pyenv/
 database.db
+*.orig
 
 # Byte-compiled / optimized / DLL files
 
