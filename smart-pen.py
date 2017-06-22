@@ -1,4 +1,4 @@
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, request
 from random import randint, randrange
 import sqlite3
 from time import gmtime, time
@@ -36,12 +36,22 @@ def create_fake(count):
     return txt
 
 @app.route("/measurements/<string:id>", methods=["GET"])
-def get_measuremnts(id):
+def get_measurements(id):
     rslt = []
     cur = get_db().cursor()
     for row in cur.execute("select * from measurements where id = ?", (id,)):
         rslt.append(dict_from_row(row))
     return jsonify(rslt)
+
+
+@app.route("/measurements", methods=["PUT"])
+def set_measurements():
+    data = request.json.get('data', [])
+    print
+    for row in data:
+        print(row['id'])
+        record_measurement(id=row['id'], time_utc=row['time_utc'], event_type=row['event_type'], lat=row['lat'], lng=row['lng'], temp=row['temp'], light=row['light'])
+    return "OK"
 
 @app.route("/ids", methods=["GET"])
 def get_ids():
