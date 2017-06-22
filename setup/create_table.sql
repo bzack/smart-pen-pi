@@ -1,1 +1,1 @@
-create table measurements (time_utc integer, temp real, light real);
+create table measurements (time_utc integer, temp real, light integer);
