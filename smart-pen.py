@@ -79,9 +79,5 @@ def get_db():
     """
     if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
-<<<<<<< HEAD
-    return g.sqlite_db
-=======
         g.sqlite_db.row_factory = sqlite3.Row
     return g.sqlite_db
->>>>>>> d6e42f50a66352a5541ae51b0a36777515866265
