@@ -7,7 +7,7 @@ source ${DIR}/../config/env.sh
 echo $NOIP_USER
 echo $NOIP_PW
 
-PI_IP=`hostname -I | sed -e 's/ //g'`
+PI_IP=`hostname -I | sed -e 's/ .*//g'`
 
 echo $PI_IP
 
