@@ -14,6 +14,9 @@ INJECTION = 'INJECTION'
 SPOILED = 'SPOILED'
 EVENT_TYPES=[PACKAGE_CREATED, MEASUREMENT, COUNTERFEIT_DETECTED, INJECTION, SPOILED]
 
+BAD_EVENTS=[COUNTERFEIT_DETECTED, SPOILED]
+END_EVENTS=[INJECTION, COUNTERFEIT_DETECTED, SPOILED]
+
 @app.route('/static/<path:path>')
 def send_static(path):
     return send_from_directory('static', path)
@@ -30,14 +33,28 @@ def create_fake(count):
     base_utc = time() - (60*60*24 * randrange(30,90))
     for i in range(count):
         id = "abbv%04d" % randint(2000,9000)
+        mcount = 0
         for j in range(0,10):
-            event_type = MEASUREMENT
+            if mcount == 0:
+                event_type = PACKAGE_CREATED
+            elif randint(0,100) < 5:
+                event_type = SPOILED
+            elif randint(0,100) < 5:
+                event_type = COUNTERFEIT_DETECTED
+            elif mcount == 9:
+                event_type = INJECTION
+            else:
+                event_type = MEASUREMENT
             time_utc = base_utc + 60*60*j
             lat = randrange(34.0,42.0)
             lng = randrange(-120.0,-76.0)
             temp = randrange(0,120)
             light = randint(0,110)
             record_measurement(id,time_utc=time_utc, event_type=event_type, lat=lat, lng=lng, temp=temp, light=light)
+
+            if event_type in END_EVENTS:
+                break
+            mcount +=1
         txt += id
     get_db().commit()
     return txt
@@ -69,6 +86,12 @@ def get_ids():
     for row in cur.execute("select distinct id from measurements"):
         rslt.append(dict_from_row(row))
     return jsonify(rslt)
+
+@app.route("/interesting_events", methods=['GET'])
+def get_interesting_events():
+    cur = get_db().cursor()
+    events = cur.execute("select * from measurements where event_type in ('INJECTION', 'SPOILED', 'COUNTERFEIT_DETECTED')")
+    return render_template('interesting_events.html', events=events)
 
 
 @app.route("/show_history/<string:id>", methods=['GET'])
