@@ -17,7 +17,7 @@
                <td>{{ env["time_utc"] | sec_to_ts }}</td>
                <td>{{ env["event_type"] }}</td>
                <td>{{ env["temp"] }}</td>
-               <td>{{ env["light"]}}</td>
+               <td>{{ env["light"]/10}}</td>
            </tr>
         {% endfor %}
     </table>
