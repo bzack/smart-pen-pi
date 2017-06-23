@@ -14,7 +14,7 @@ if __name__ == '__main__':
         button = multiprocessing.Process(name='button', \
                                          target=button_main, args=(q,))
         sensor.start()
-        time.sleep(4)
+        time.sleep(2)
         button.start()
 
         sensor.join()
