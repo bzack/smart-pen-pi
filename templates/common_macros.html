@@ -1,0 +1,47 @@
+{% macro depends() -%}
+
+{% if "bootstrap-toggle" in varargs %}
+<link rel="stylesheet" type="text/css" href="{{ url_for( 'versioned.static', filename='dist/bootstrap-toggle/bootstrap2-toggle.min.css') }}"/>
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='dist/bootstrap-toggle/bootstrap2-toggle.min.js') }}"></script>
+{% endif %}
+
+{% if "jasny" in varargs %}
+<link rel="stylesheet" href="{{ url_for( 'versioned.static', filename='dist/jasny-bootstrap/css/jasny-bootstrap.min.css') }}">
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='dist/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
+{% endif %}
+
+{% if "select2" in varargs %}
+<link rel="stylesheet" type="text/css" href="{{ url_for( 'versioned.static', filename='dist/select2-4.0.3/css/select2.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ url_for( 'versioned.static', filename='dist/select2-4.0.3/css/select2-bootstrap.min.css') }}"/>
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='dist/select2-4.0.3/js/select2.full.min.js') }}"></script>
+{% endif %}
+
+{% if "panelController" in varargs %}
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='common/panelController.js') }}"></script>
+{% endif %}
+
+{% if "fixedHeaderController" in varargs %}
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='common/fixedHeaderController.js') }}"></script>
+{% endif %}
+
+
+{% if "font-awesome" in varargs or "awesome-checkbox" in varargs %}
+<link rel="stylesheet" href="{{ url_for( 'versioned.static', filename='dist/Font-Awesome/css/font-awesome.min.css') }}" />
+{% endif %}
+
+{% if "awesome-checkbox" in varargs %}
+<link rel="stylesheet" href="{{ url_for( 'versioned.static', filename='dist/awesome-bootstrap-checkbox.css') }}" />
+{% endif %}
+
+{% if "datatables" in varargs %}
+<link rel="stylesheet" type="text/css" href="{{ url_for( 'versioned.static', filename='dist/DataTables/datatables.min.css') }}"/>
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='dist/DataTables/datatables.min.js') }}"></script>
+{% endif %}
+
+{% if "yadcf" in varargs %}
+<link rel="stylesheet" type="text/css" href="{{ url_for( 'versioned.static', filename='dist/yadcf-0.9.1/jquery.dataTables.yadcf.css') }}"/>
+<script type="text/javascript" src="{{ url_for( 'versioned.static', filename='dist/yadcf-0.9.1/jquery.dataTables.yadcf.js') }}"></script>
+{% endif %}
+
+
+{%- endmacro %}

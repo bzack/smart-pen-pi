@@ -1,0 +1,74 @@
+{% from "common_macros.html" import depends %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Genloader - {% block title %}{% endblock %}</title>
+
+
+    <link rel="script" href="{{ url_for('static', filename='dist/jquery/jquery.min.js')}}">
+    <link rel="script" href="{{ url_for('static', filename='dist/jquery-ui/jquery-ui.min.js')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/jquery-ui/themes/hot-sneaks/jquery-ui.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/jquery-ui/themes/hot-sneaks/theme.css')}}">
+    <link rel="script" href="{{ url_for('static', filename='dist/bootstrap/js/bootstrap.min.js')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='dist/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/bootstrap/css/bootstrap-theme.min.css')}}">
+    {% endblock %}
+  </head>
+
+  <body style="padding-top: 70px">
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <div id="navbar-img-loader-holder">
+                        <span id="navbar-brand-img-actual">
+                            <img alt="SmartPen" src="">
+                        </span>
+                        <div id="loading-animation" class="loading">
+                          <div class="loading-bar"></div>
+                          <div class="loading-bar"></div>
+                          <div class="loading-bar"></div>
+                          <div class="loading-bar"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{url_for('.get_ids')}}">List IDs</a></li>
+                    <li {% if active_nav == 'support' %}class="active"{% endif %}><a href="#">Support</a></li>
+                </ul>
+
+                {#<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Not Logged In <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Manual Login</a></li>
+                        </ul>
+                    </li>
+                </ul>#}
+            </div>
+        </div>
+    </nav>
+
+
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+    {% block bottom %}{% endblock %}
+  </body>
+</html>

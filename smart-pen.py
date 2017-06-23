@@ -1,8 +1,10 @@
-from flask import Flask, g, jsonify, request
+from flask import Flask, g, jsonify, request, send_from_directory, redirect, url_for, render_template, render_template_string
+from flask_cors import CORS
 from random import randint, randrange
 import sqlite3
 from time import gmtime, time
-app = Flask(__name__)
+app = Flask('smartpen')
+CORS(app)
 
 PACKAGE_CREATED = 'PACKAGE_CREATED'
 MEASUREMENT = 'MEASUREMENT'
@@ -11,10 +13,14 @@ INJECTION = 'INJECTION'
 SPOILED = 'SPOILED'
 EVENT_TYPES=[PACKAGE_CREATED, MEASUREMENT, COUNTERFEIT_DETECTED, INJECTION, SPOILED]
 
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template('index.html')
 
 
 @app.route("/create_fake/<int:count>", methods=['GET'])
@@ -22,7 +28,7 @@ def create_fake(count):
     txt = ""
     base_utc = time() - (60*60*24 * randrange(30,90))
     for i in range(count):
-        id = "abbv%04d" % randint(2000,9999)
+        id = "abbv%04d" % randint(2000,9000)
         for j in range(0,10):
             event_type = MEASUREMENT
             time_utc = base_utc + 60*60*j
@@ -34,6 +40,7 @@ def create_fake(count):
         txt += id
     get_db().commit()
     return txt
+
 
 @app.route("/measurements/<string:id>", methods=["GET"])
 def get_measurements(id):
@@ -53,6 +60,7 @@ def set_measurements():
         record_measurement(id=row['id'], time_utc=row['time_utc'], event_type=row['event_type'], lat=row['lat'], lng=row['lng'], temp=row['temp'], light=row['light'])
     return "OK"
 
+
 @app.route("/ids", methods=["GET"])
 def get_ids():
     rslt = []
@@ -60,6 +68,7 @@ def get_ids():
     for row in cur.execute("select distinct id from measurements"):
         rslt.append(dict_from_row(row))
     return jsonify(rslt)
+
 
 @app.route("/measuremnts", methods=['DELETE'])
 def delete_measurements():
@@ -91,3 +100,20 @@ def get_db():
         g.sqlite_db = connect_db()
         g.sqlite_db.row_factory = sqlite3.Row
     return g.sqlite_db
+
+
+
+@app.template_filter('sec_to_ts')
+def sec_to_ts(sec):
+    return str(datetime.fromtimestamp(sec))
+
+
+@app.template_filter('status_to_color')
+def status_to_color(status):
+    stats = {
+        "DONE" : "success",
+        "PROCESSING" : "info",
+        "BATCH_FAILED" : "danger",
+        "NEW" : "active"
+    }
+    return stats[status]
