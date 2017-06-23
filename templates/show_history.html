@@ -11,6 +11,8 @@
            <th>Event</th>
            <th>Temp F</th>
            <th>% Light Exposure</th>
+           <th>Lattitude</th>
+           <th>Longitude</th>
        </tr>
         {% for env in events %}
            <tr class="{{ env['event_type'] | status_to_color }}">
@@ -18,6 +20,8 @@
                <td>{{ env["event_type"] }}</td>
                <td>{{ env["temp"] }}</td>
                <td>{{ env["light"]/10}}</td>
+               <td>{{ env["lat"] }}</td>
+               <td>{{ env["lng"] }}</td>
            </tr>
         {% endfor %}
     </table>

@@ -50,6 +50,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
+                    <li><a href="{{url_for('.get_interesting_events')}}">Interesting Events</a></li>
                     <li><a href="{{url_for('.get_ids')}}">List IDs</a></li>
                     <li {% if active_nav == 'support' %}class="active"{% endif %}><a href="#">Support</a></li>
                 </ul>
