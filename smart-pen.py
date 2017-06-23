@@ -2,7 +2,8 @@ from flask import Flask, g, jsonify, request, send_from_directory, redirect, url
 from flask_cors import CORS
 from random import randint, randrange
 import sqlite3
-from time import gmtime, time
+import datetime
+from time import gmtime, time, strftime
 app = Flask('smartpen')
 CORS(app)
 
@@ -70,6 +71,13 @@ def get_ids():
     return jsonify(rslt)
 
 
+@app.route("/show_history/<string:id>", methods=['GET'])
+def show_history(id):
+    cur = get_db().cursor()
+    events = cur.execute("select * from measurements where id = ?", (id,))
+    return render_template('show_history.html', events=events)
+
+
 @app.route("/measuremnts", methods=['DELETE'])
 def delete_measurements():
     get_db().execute("delete from measurements where id > 'abbv2000'")
@@ -105,15 +113,16 @@ def get_db():
 
 @app.template_filter('sec_to_ts')
 def sec_to_ts(sec):
-    return str(datetime.fromtimestamp(sec))
+    return strftime("%Y-%m-%d %H:%M", gmtime(sec))
 
 
 @app.template_filter('status_to_color')
 def status_to_color(status):
     stats = {
-        "DONE" : "success",
-        "PROCESSING" : "info",
-        "BATCH_FAILED" : "danger",
-        "NEW" : "active"
+        PACKAGE_CREATED : "info",
+        MEASUREMENT : "",
+        INJECTION : "success",
+        SPOILED : "danger",
+        COUNTERFEIT_DETECTED : "danger"
     }
     return stats[status]
